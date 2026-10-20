@@ -1,0 +1,30 @@
+[project]
+name = "fastapi-learning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Avishek Thapa", email = "avishekthapa1997@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi[standard]>=0.128.8",
+    "pydantic-settings>=2.11.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.4.2",
+    "ruff>=0.17.1",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.ruff.format]
+skip-magic-trailing-comma = false
