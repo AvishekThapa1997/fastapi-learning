@@ -30,7 +30,7 @@ class CreateJob(BaseModel):
 
 class Job(CreateJob):
     id: JobId
-    created_at: datetime = datetime.now()
+    created_at: datetime = Field(default_factory=datetime.now())
     status: JobStatus = JobStatus.PENDING
 
 

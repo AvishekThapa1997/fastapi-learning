@@ -25,7 +25,7 @@ def get_job_details(
     job_id: Annotated[int, Path(title="The ID of the job to get")],
 ) -> APIResponse[Job]:
     job_data = next((job for job in jobs if job.id == job_id), None)
-    if not job_data:
+    if job_data is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Job with id {job_id} not available",
@@ -36,7 +36,7 @@ def get_job_details(
     )
 
 
-@job_router.post("/jobs", status_code=status.HTTP_201_CREATED)
+@job_router.post("/", status_code=status.HTTP_201_CREATED)
 def create_job(create_job: CreateJob) -> APIResponse[Job]:
     job = Job(
         id=len(jobs) + 1,
