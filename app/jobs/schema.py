@@ -64,7 +64,6 @@ class BaseJob(BaseModel):
 
 
 class CreateJob(BaseJob):
-    max_attempts: int = Field(default=3, gt=1)
     payload: JobPayload = Field(...)
 
     model_config = ConfigDict(
@@ -88,6 +87,13 @@ class CreateJob(BaseJob):
         else:
             raise ValueError("Unsupported job type")
         return data
+
+
+class CreateJobWithMaxAttempts(CreateJob):
+    max_attempts: int = Field(
+        ...,
+        exclude=False,
+    )
 
 
 class Job(BaseJob):

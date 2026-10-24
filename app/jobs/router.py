@@ -1,9 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Path, status
+from fastapi import APIRouter, Depends, Path, status
 
 from app.core.schema import APIResponse
-from app.jobs.schema import CreateJob, Job
+
+from .dependencies import JobService, get_max_attempts
+from .schema import CreateJob, CreateJobWithMaxAttempts, Job
 
 router = APIRouter(
     prefix="/jobs",
@@ -14,7 +16,8 @@ jobs: list[Job] = []
 
 
 @router.get("/")
-def get_user_jobs() -> APIResponse[list[Job]]:
+def get_user_jobs(job_service: JobService) -> APIResponse[list[Job]]:
+    jobs = job_service.get_jobs()
     return APIResponse(
         data=jobs,
     )
@@ -23,26 +26,28 @@ def get_user_jobs() -> APIResponse[list[Job]]:
 @router.get("/{job_id}")
 def get_job_details(
     job_id: Annotated[int, Path(title="The ID of the job to get")],
+    job_service: JobService,
 ) -> APIResponse[Job]:
-    job_data = next((job for job in jobs if job.id == job_id), None)
-    if job_data is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Job with id {job_id} not available",
-        )
+    job = job_service.get_job_details_by_id(job_id=job_id)
     return APIResponse(
         success=True,
-        data=job_data,
+        data=job,
     )
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create_job(create_job: CreateJob) -> APIResponse[Job]:
-    job = Job(
-        id=len(jobs) + 1,
-        **create_job.model_dump(),
+def create_job(
+    create_job: CreateJob,
+    max_attempts: Annotated[int, Depends(get_max_attempts)],
+    job_service: JobService,
+) -> APIResponse[Job]:
+
+    job = job_service.create_job(
+        create_job=CreateJobWithMaxAttempts(
+            **create_job.model_dump(),
+            max_attempts=max_attempts,
+        )
     )
-    jobs.append(job)
     return APIResponse(
         data=job,
     )

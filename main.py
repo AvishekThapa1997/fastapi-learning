@@ -1,16 +1,20 @@
 from fastapi import APIRouter, FastAPI
 
-from app.core.config import app_config
+from app.core.config import Config
 from app.jobs.router import router as job_router
 
-app = FastAPI(
-    title=app_config.app_name,
-)
 
-api_routes = APIRouter(
-    prefix="/api",
-)
+def start_app():
+    app_config = Config()
+    app = FastAPI(
+        title=app_config.app_name,
+    )
 
-api_routes.include_router(job_router)
+    api_routes = APIRouter(
+        prefix="/api",
+    )
 
-app.include_router(api_routes)
+    api_routes.include_router(job_router)
+
+    app.include_router(api_routes)
+    return app
