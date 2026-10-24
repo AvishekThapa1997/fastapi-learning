@@ -40,8 +40,7 @@ def get_job_details(
 def create_job(create_job: CreateJob) -> APIResponse[Job]:
     job = Job(
         id=len(jobs) + 1,
-        name=create_job.name,
-        type=create_job.type,
+        **create_job.model_dump(),
     )
     jobs.append(job)
     return APIResponse(
