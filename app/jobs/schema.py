@@ -101,7 +101,7 @@ class Job(BaseJob):
 
     @field_serializer("created_at")
     def serialize_datetime(self, created_at: datetime):
-        return datetime.strftime("%Y-%m-%d %H:%M:%S")
+        return created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class UpdateJob(BaseModel):
@@ -109,16 +109,3 @@ class UpdateJob(BaseModel):
     name: str | None = None
     type: JobType | None = None
     status: JobStatus | None = None
-
-
-update_job = UpdateJob(
-    id=1,
-    name="test",
-    type=JobType.SEND_EMAIL.value,
-)
-
-print(
-    update_job.model_dump(
-        exclude_unset=True,
-    )
-)

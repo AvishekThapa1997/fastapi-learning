@@ -1,7 +1,7 @@
 from fastapi import APIRouter, FastAPI
 
-from app.config.app_config import app_config
-from app.routes.jobs.jobs_routers import job_router
+from app.core.config import app_config
+from app.jobs.router import router as job_router
 
 app = FastAPI(
     title=app_config.app_name,

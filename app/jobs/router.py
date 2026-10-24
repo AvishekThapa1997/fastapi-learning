@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Path, status
 
-from app.models.common_models import APIResponse
-from app.models.jobs_models import CreateJob, Job
+from app.core.schema import APIResponse
+from app.jobs.schema import CreateJob, Job
 
-job_router = APIRouter(
+router = APIRouter(
     prefix="/jobs",
     tags=["Jobs"],
 )
@@ -13,14 +13,14 @@ job_router = APIRouter(
 jobs: list[Job] = []
 
 
-@job_router.get("/")
+@router.get("/")
 def get_user_jobs() -> APIResponse[list[Job]]:
     return APIResponse(
         data=jobs,
     )
 
 
-@job_router.get("/{job_id}")
+@router.get("/{job_id}")
 def get_job_details(
     job_id: Annotated[int, Path(title="The ID of the job to get")],
 ) -> APIResponse[Job]:
@@ -36,7 +36,7 @@ def get_job_details(
     )
 
 
-@job_router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_job(create_job: CreateJob) -> APIResponse[Job]:
     job = Job(
         id=len(jobs) + 1,
