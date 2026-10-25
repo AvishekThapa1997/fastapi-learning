@@ -12,8 +12,6 @@ router = APIRouter(
     tags=["Jobs"],
 )
 
-jobs: list[Job] = []
-
 
 @router.get("/")
 def get_user_jobs(job_service: JobService) -> APIResponse[list[Job]]:
