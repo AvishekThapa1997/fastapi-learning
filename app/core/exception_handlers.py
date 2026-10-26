@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from starlette.exceptions import HTTPException as StarletteException
@@ -11,31 +11,45 @@ async def http_exception_handler(request: Request, exception: StarletteException
     return JSONResponse(
         status_code=exception.status_code,
         headers=exception.headers,
-        content=APIResponse(
+        content=APIResponse.create_json_reponse(
             success=False,
             error={
                 "code": exception.status_code,
                 "message": exception.detail,
             },
-        ).model_dump(mode="json"),
+        ),
     )
 
 
 async def request_validation_exception_handler(
     request: Request, exception: RequestValidationError
 ) -> Response:
-
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     formatted_errors = [
         {".".join(map(str, err.get("loc"))): err.get("msg")} for err in exception.errors()
     ]
     return JSONResponse(
-        status_code=422,
-        content=APIResponse(
+        status_code=status_code,
+        content=APIResponse.create_json_reponse(
             success=False,
             error={
-                "code": 422,
+                "code": status_code,
                 "message": "validation_failed",
                 "errors": formatted_errors,
             },
-        ).model_dump(mode="json"),
+        ),
+    )
+
+
+async def unexpected_exception_handler(request: Request, exception: BaseException) -> Response:
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    return JSONResponse(
+        status_code=status_code,
+        content=APIResponse.create_json_reponse(
+            success=False,
+            error={
+                "code": status_code,
+                "message": "Internal server error",
+            },
+        ),
     )
