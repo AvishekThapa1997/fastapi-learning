@@ -1,5 +1,4 @@
-from fastapi import HTTPException, status
-
+from .exceptions import JobNotFoundError
 from .schema import CreateJobWithMaxAttempts, Job, JobId
 
 
@@ -23,8 +22,5 @@ class JobService:
     def get_job_details_by_id(self, job_id: JobId) -> Job:
         job = next((job for job in self.__jobs if job.id == job_id), None)
         if job is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Job is not available with id {job_id}",
-            )
+            raise JobNotFoundError(job_id=job_id)
         return job

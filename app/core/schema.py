@@ -8,7 +8,11 @@ class APIError(TypedDict):
     message: str
 
 
+class ValidationError(APIError):
+    errors: dict[str, str | int]
+
+
 class APIResponse[T](BaseModel):
     data: T | None = None
     success: bool = True
-    error: APIError | None = None
+    error: APIError | ValidationError | None = None

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Path, status
 from app.core.schema import APIResponse
 
 from .dependencies import JobService, get_max_attempts
-from .schema import CreateJob, CreateJobWithMaxAttempts, Job
+from .schema import CreateJob, CreateJobWithMaxAttempts, Job, JobId
 
 router = APIRouter(
     prefix="/jobs",
@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 def get_user_jobs(job_service: JobService) -> APIResponse[list[Job]]:
     jobs = job_service.get_jobs()
     return APIResponse(
@@ -21,9 +21,9 @@ def get_user_jobs(job_service: JobService) -> APIResponse[list[Job]]:
     )
 
 
-@router.get("/{job_id}")
+@router.get("/{job_id}", status_code=status.HTTP_200_OK)
 def get_job_details(
-    job_id: Annotated[int, Path(title="The ID of the job to get")],
+    job_id: Annotated[JobId, Path(title="The ID of the job to get")],
     job_service: JobService,
 ) -> APIResponse[Job]:
     job = job_service.get_job_details_by_id(job_id=job_id)
