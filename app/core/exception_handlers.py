@@ -24,19 +24,15 @@ async def request_validation_exception_handler(
     request: Request, exception: RequestValidationError
 ) -> Response:
 
-    formatted_errors = {}
-    for err in exception.errors():
-        key = err.get("loc")[-1]
-        ctx = err.get("ctx")
-        message = str(ctx.get("error")) if "error" in ctx else err.msg
-        formatted_errors[key] = message
+    formatted_errors = [{".".join(err.get("loc")): err.get("msg")} for err in exception.errors()]
     return JSONResponse(
         status_code=422,
         content=APIResponse(
+            success=False,
             error={
                 "code": 422,
                 "message": "validation_failed",
                 "errors": formatted_errors,
-            }
+            },
         ).model_dump(mode="json"),
     )

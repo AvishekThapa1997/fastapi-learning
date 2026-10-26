@@ -9,7 +9,7 @@ class APIError(TypedDict):
 
 
 class ValidationError(APIError):
-    errors: dict[str, str | int]
+    errors: list[dict[str, str]]
 
 
 class APIResponse[T](BaseModel):
