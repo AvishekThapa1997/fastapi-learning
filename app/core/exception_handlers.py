@@ -11,7 +11,7 @@ async def http_exception_handler(request: Request, exception: StarletteException
     return JSONResponse(
         status_code=exception.status_code,
         headers=exception.headers,
-        content=APIResponse.create_json_reponse(
+        content=APIResponse.create_json_response(
             success=False,
             error={
                 "code": exception.status_code,
@@ -30,7 +30,7 @@ async def request_validation_exception_handler(
     ]
     return JSONResponse(
         status_code=status_code,
-        content=APIResponse.create_json_reponse(
+        content=APIResponse.create_json_response(
             success=False,
             error={
                 "code": status_code,
@@ -41,11 +41,11 @@ async def request_validation_exception_handler(
     )
 
 
-async def unexpected_exception_handler(request: Request, exception: BaseException) -> Response:
+async def unexpected_exception_handler(request: Request, exception: Exception) -> Response:
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     return JSONResponse(
         status_code=status_code,
-        content=APIResponse.create_json_reponse(
+        content=APIResponse.create_json_response(
             success=False,
             error={
                 "code": status_code,

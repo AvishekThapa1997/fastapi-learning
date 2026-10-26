@@ -17,7 +17,7 @@ api_routes = APIRouter(
 
 app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, request_validation_exception_handler)
-app.add_exception_handler(BaseException, unexpected_exception_handler)
+app.add_exception_handler(Exception, unexpected_exception_handler)
 api_routes.include_router(job_router)
 
 app.include_router(api_routes)

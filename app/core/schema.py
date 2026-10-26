@@ -18,5 +18,5 @@ class APIResponse[T](BaseModel):
     error: APIError | ValidationError | None = None
 
     @classmethod
-    def create_json_reponse(cls: type["APIResponse[T]"], *args, **kwargs) -> dict:
+    def create_json_response(cls: type["APIResponse[T]"], *args, **kwargs) -> dict:
         return cls(*args, **kwargs).model_dump(mode="json")
