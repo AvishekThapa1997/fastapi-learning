@@ -1,11 +1,12 @@
-from fastapi import HTTPException, Request
+from fastapi import Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
+from starlette.exceptions import HTTPException as StarletteException
 
 from .schema import APIResponse
 
 
-async def http_exception_handler(request: Request, exception: HTTPException) -> Response:
+async def http_exception_handler(request: Request, exception: StarletteException) -> Response:
 
     return JSONResponse(
         status_code=exception.status_code,
