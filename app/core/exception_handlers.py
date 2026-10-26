@@ -14,7 +14,6 @@ async def http_exception_handler(
     request: Request,
     exception: StarletteException,
 ) -> Response:
-    logger.exception(exception)
     return JSONResponse(
         status_code=exception.status_code,
         headers=exception.headers,
@@ -31,7 +30,6 @@ async def http_exception_handler(
 async def request_validation_exception_handler(
     request: Request, exception: RequestValidationError
 ) -> Response:
-    logger.exception(exception)
     status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
     formatted_errors = [
         {".".join(map(str, err.get("loc"))): err.get("msg")} for err in exception.errors()
