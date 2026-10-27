@@ -13,12 +13,13 @@ router = APIRouter(
 )
 
 
-@router.get("/", status_code=status.HTTP_200_OK)
+@router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+)
 def get_user_jobs(job_service: JobService) -> APIResponse[list[Job]]:
     jobs = job_service.get_jobs()
-    return APIResponse(
-        data=jobs,
-    )
+    return APIResponse(data=jobs)
 
 
 @router.get("/{job_id}", status_code=status.HTTP_200_OK)
@@ -28,7 +29,6 @@ def get_job_details(
 ) -> APIResponse[Job]:
     job = job_service.get_job_details_by_id(job_id=job_id)
     return APIResponse(
-        success=True,
         data=job,
     )
 
